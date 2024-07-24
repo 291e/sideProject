@@ -10,14 +10,14 @@ db.connect();
 db.create();
 
 router.post('/signup', async function(req, res, next) {
-  const {id, password} = req.body
+  const {username, id, password} = req.body
 
-  if(!validator.isAlphanumeric(id) || !validator.isAlphanumeric(password)){
+  if(!validator.isAlphanumeric(username) || !validator.isEmail(id) || !validator.isAlphanumeric(password)){
     res.status(400).json({ message: 'Invalid string.' });
   }
   else{
     try{
-      await registerMember(id,password);
+      await registerMember(username,id,password);
       res.status(200).json({ message: 'success' });
     }
     catch(err){
@@ -29,7 +29,7 @@ router.post('/signup', async function(req, res, next) {
 router.post('/login', async function(req, res, next) {
   const {id, password} = req.body
 
-  if(!validator.isAlphanumeric(id) || !validator.isAlphanumeric(password)){
+  if(!validator.isEmail(id) || !validator.isAlphanumeric(password)){
     res.status(400).json({ message: 'Invalid string.' });
   }
   else{
@@ -60,13 +60,13 @@ router.post('/protected', passport.authenticate('jwt', { session: false }), (req
   res.json({ message: 'This is a protected route'});
 });
 
-async function registerMember(id, password) {
+async function registerMember(username, id, password) {
   const saltRounds = 10;
 
   try {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     await db.begin();
-    await db.insertMember(id,hashedPassword);
+    await db.insertMember(username,id,hashedPassword);
     await db.commit();
   } 
   catch (err) {
