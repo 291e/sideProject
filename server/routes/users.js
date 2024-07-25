@@ -14,12 +14,15 @@ router.post('/profile', passport.authenticate('jwt', { session: false }), async 
 });
 
 router.post('/profile/modify', passport.authenticate('jwt', { session: false }), async function (req, res) {
-  const id = req.body;
-  const member = await memberService.memberInfo(id);
-  res.status(200).json({ member });
+  const member = Object.values(req.body);
+  try{
+    await memberService.memberUpdate(member);
+    res.status(200).json({ message: 'Update Success' });
+  }
+  catch(err){
+    res.status(500).json({ message: 'Update Failed' });
+  }
 });
 
-class member{
 
-}
 module.exports = router;

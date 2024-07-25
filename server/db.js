@@ -20,7 +20,14 @@ class dbcon {
     await this.client.query('CREATE TABLE IF NOT EXISTS member (member_id SERIAL, name TEXT, id TEXT PRIMARY KEY, password TEXT)');
   }
   async insertMember(username, id, password){
-    await this.client.query('INSERT INTO member (name, id, password) VALUES ($1, $2, $3)', [username, id, password]);
+    try {
+      await this.begin();
+      await this.client.query('INSERT INTO member (name, id, password) VALUES ($1, $2, $3)', [username, id, password]);
+      await this.commit();
+    }
+    catch{
+      await this.rollback();
+    }
   }
   async selectMember(id){
     const result = await this.client.query('SELECT name FROM member WHERE id = $1',[id]);
@@ -33,6 +40,9 @@ class dbcon {
     } else {
       throw new Error('User not found');
     }
+  }
+  async updateMember(member){
+    await this.client.query('UPDATE member SET name = $1, id = $2',member);
   }
   async begin(){
     await this.client.query('BEGIN');
