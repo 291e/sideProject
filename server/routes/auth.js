@@ -6,11 +6,9 @@ const jwt = require('jsonwebtoken');
 const passport = require('./passport');
 const router = express.Router();
 const db = new dbcon;
-db.connect();
-db.create();
 
 router.post('/signup', async function(req, res, next) {
-  const {username, email, password} = req.body
+  const {username = '', email= '', password = ''} = req.body
 
   if(!validator.isAlphanumeric(username) || !validator.isEmail(email) || !validator.isAlphanumeric(password)){
     res.status(400).json({ message: 'Invalid string.' });
@@ -27,16 +25,15 @@ router.post('/signup', async function(req, res, next) {
 });
 
 router.post('/login', async function(req, res, next) {
-  const {email, password} = req.body
-  const id = email;
-  console.log(req.body);
+  const {email= '', password = ''} = req.body
+
   if(!validator.isEmail(email) || !validator.isAlphanumeric(password)){
     res.status(400).json({ message: 'Invalid string.' });
   }
   else{
     try{
-    const salt = await db.selectMember(email);
-    const isMatch = await bcrypt.compare(password, salt.password);
+    const hash = await db.selectMember(email);
+    const isMatch = await bcrypt.compare(password, hash.password);
     
     if(isMatch){
       //jwt token 발급
@@ -57,9 +54,6 @@ router.get('/', async function(req, res, next) {
   res.status(200).json({ message: 'hello im backend server' });
 });
 
-router.post('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.json({ message: 'This is a protected route'});
-});
 
 async function registerMember(username, id, password) {
   const saltRounds = 10;
