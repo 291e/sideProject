@@ -1,7 +1,6 @@
 const passport = require('passport');
-const dbcon = require('../db');
+const db = require('../db');
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
-const db = new dbcon;
 require('dotenv').config();
 
 const opts = {
@@ -11,8 +10,8 @@ const opts = {
 
 passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
   try {
-    const result = await db.selectMember(jwt_payload.id);
-    return done(null, result);
+    await db.authMember(jwt_payload.id);
+    return done(null, jwt_payload);
   } 
   catch (err) {
     return done(err, false);

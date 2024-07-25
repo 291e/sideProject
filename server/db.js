@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Client } = require('pg');
 
-class db {
+class dbcon {
   constructor(){
     this.client = new Client({
       user: process.env.DB_USER,
@@ -23,6 +23,10 @@ class db {
     await this.client.query('INSERT INTO member (name, id, password) VALUES ($1, $2, $3)', [username, id, password]);
   }
   async selectMember(id){
+    const result = await this.client.query('SELECT name FROM member WHERE id = $1',[id]);
+    return result.rows[0];
+  }
+  async authMember(id){
     const result = await this.client.query('SELECT password FROM member WHERE id = $1',[id]);
     if (result.rows.length > 0) {
       return result.rows[0];
@@ -44,4 +48,4 @@ class db {
   }
 }
 
-module.exports = db;
+module.exports = new dbcon;
