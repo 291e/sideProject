@@ -1,48 +1,45 @@
-// pages/profile.tsx (Next.js)
-
 import React from "react";
-import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
+import { cookies } from "next/headers";
+import { redirect, useRouter } from "next/navigation";
 
 interface ProfileProps {
   username: string;
 }
 
-export const getServerSideProps: GetServerSideProps<ProfileProps> = async (
-  context
-) => {
-  const cookie = context.req.headers.cookie;
-  const session = cookie
-    ?.split("; ")
-    .find((row) => row.startsWith("session="))
-    ?.split("=")[1];
-
+async function fetchProfile(token: string) {
   const res = await fetch("http://localhost:8000/api/profile", {
     headers: {
-      session: session || "",
+      Authorization: `Bearer ${token}`,
     },
   });
 
   if (res.status === 401) {
-    return { redirect: { destination: "/login", permanent: false } };
+    redirect("/login");
   }
 
   const data = await res.json();
+  return data;
+}
 
-  return {
-    props: {
-      username: data.username,
-    },
-  };
-};
+export default async function Profile() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token")?.value || "";
 
-const Profile: React.FC<ProfileProps> = ({ username }) => {
+  const data = await fetchProfile(token);
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  const username = data.username;
+
   const router = useRouter();
 
   const handleLogout = async () => {
     await fetch("/api/logout", {
       method: "POST",
     });
+    document.cookie = "token=; Max-Age=0; path=/";
     router.push("/");
   };
 
@@ -52,6 +49,4 @@ const Profile: React.FC<ProfileProps> = ({ username }) => {
       <button onClick={handleLogout}>로그아웃</button>
     </div>
   );
-};
-
-export default Profile;
+}
