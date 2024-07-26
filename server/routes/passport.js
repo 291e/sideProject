@@ -6,6 +6,7 @@ require('dotenv').config();
 const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET,
+  algorithms: ['HS256']
 };
 
 passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {

@@ -6,5 +6,8 @@ class memberService{
     async memberUpdate(member){
         await db.updateMember(member);
     }
+    async memberDelete(id){
+        await db.deleteMember(id);
+    }
 }
 module.exports = new memberService;

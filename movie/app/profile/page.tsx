@@ -11,9 +11,15 @@ interface ProfileProps {
 export const getServerSideProps: GetServerSideProps<ProfileProps> = async (
   context
 ) => {
-  const res = await fetch("http://localhost:8000", {
+  const cookie = context.req.headers.cookie;
+  const session = cookie
+    ?.split("; ")
+    .find((row) => row.startsWith("session="))
+    ?.split("=")[1];
+
+  const res = await fetch("http://localhost:8000/api/profile", {
     headers: {
-      Cookie: context.req.headers.cookie || "",
+      session: session || "",
     },
   });
 

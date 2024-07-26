@@ -42,7 +42,17 @@ class dbcon {
     }
   }
   async updateMember(member){
-    await this.client.query('UPDATE member SET name = $1, id = $2',member);
+    try {
+      await this.begin();
+      await this.client.query('UPDATE member SET name = $1, id = $2',member);
+      await this.commit();
+    }
+    catch{
+      await this.rollback();
+    }
+  }
+  async deleteMember(id){
+    await this.client.query('DELETE FROM member WHERE id = $1',[id]);
   }
   async begin(){
     await this.client.query('BEGIN');

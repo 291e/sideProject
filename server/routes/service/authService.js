@@ -1,6 +1,5 @@
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const db = require('../../db');
 
@@ -32,8 +31,7 @@ class authService {
             
                 if(isMatch){
                 //jwt token 발급
-                    const token = await jwt.sign({ id: email }, process.env.JWT_SECRET, { expiresIn: '20m' });
-                    const encryptedToken = crypto.Cipher;
+                    const token = await jwt.sign({ id: email }, process.env.JWT_SECRET, { algorithm: 'HS256', expiresIn: '20m' });
                     return [200, token];
                 }
                 else{
