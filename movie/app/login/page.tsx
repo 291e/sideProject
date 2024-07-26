@@ -23,7 +23,7 @@ export default function LogIn() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:8080/api/login", {
+    const res = await fetch("http://localhost:8080", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
