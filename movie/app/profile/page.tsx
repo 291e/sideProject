@@ -1,9 +1,13 @@
-import React from "react";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import ClientProfile from "@/components/clientProfile";
+"use client";
 
-async function fetchProfile(token: string) {
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+interface ProfileProps {
+	username: string;
+}
+
+async function fetchProfile(token: string): Promise<ProfileProps | null> {
 	const res = await fetch("http://localhost:8080", {
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -11,24 +15,49 @@ async function fetchProfile(token: string) {
 	});
 
 	if (res.status === 401) {
-		redirect("/login");
+		return null;
 	}
 
 	const data = await res.json();
 	return data;
 }
 
-export default async function Profile() {
-	const cookieStore = cookies();
-	const token = cookieStore.get("token")?.value || "";
+export default function Profile() {
+	const [username, setUsername] = useState<string | null>(null);
+	const router = useRouter();
 
-	const data = await fetchProfile(token);
+	useEffect(() => {
+		const fetchData = async () => {
+			const token = localStorage.getItem("token") || "";
 
-	if (!data) {
+			const data = await fetchProfile(token);
+			if (data === null) {
+				// Redirect to login if profile fetch fails
+				router.push("/login");
+			} else {
+				setUsername(data.username);
+			}
+		};
+
+		fetchData();
+	}, [router]);
+
+	const handleLogout = async () => {
+		await fetch("/api/logout", {
+			method: "POST",
+		});
+		localStorage.removeItem("token");
+		router.push("/");
+	};
+
+	if (username === null) {
 		return <div>Loading...</div>;
 	}
 
-	const username = data.username;
-
-	return <ClientProfile username={username} />;
+	return (
+		<div>
+			<h1>어서오세요, {username}.</h1>
+			<button onClick={handleLogout}>로그아웃</button>
+		</div>
+	);
 }
