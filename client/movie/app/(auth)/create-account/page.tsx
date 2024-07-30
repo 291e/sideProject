@@ -39,7 +39,7 @@ export default function CreateAccount() {
       return;
     }
 
-    const res = await fetch("http://localhost:8080", {
+    const res = await fetch("http://localhost:8000/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

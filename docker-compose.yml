@@ -1,12 +1,35 @@
 version: '3.8'
 
 services:
+  webserver:
+    image: nginx:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./web/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend_network
+      - backend_network
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+
+  frontend:
+    build: ./client
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend_network
+    restart: always
+  
   backend:
     build: ./server
     ports:
       - "8080:8080"
     networks:
-      - backend
+      - frontend_network
+      - backend_network
     depends_on:
       - postgres
     restart: always
@@ -15,7 +38,7 @@ services:
     image: "postgres:16"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1
+      POSTGRES_PASSWORD: movie
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 10s
@@ -25,13 +48,16 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - backend
+      - backend_network
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
 
 networks:
-  backend:
+  frontend_network:
+    driver: bridge
+  backend_network:
     driver: bridge
 
 volumes:

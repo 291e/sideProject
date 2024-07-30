@@ -8,7 +8,7 @@ interface ProfileProps {
 }
 
 async function fetchProfile(token: string): Promise<ProfileProps | null> {
-	const res = await fetch("http://localhost:8080", {
+	const res = await fetch("http://localhost:8000/users/profile", {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},
