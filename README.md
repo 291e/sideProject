@@ -1,6 +1,6 @@
 # Movie Community Project
 
-## Installation
+## Using
 1. Run Docker-compose:
    ```bash
    docker-compose up
