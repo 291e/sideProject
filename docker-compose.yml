@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   webserver:
-    image: nginx:latest
+    build: ./web
     ports:
       - "8000:8000"
     volumes:
