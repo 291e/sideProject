@@ -10,7 +10,6 @@ const publicOnlyUrls: Routes = {
   "/login": true,
   "/sms": true,
   "/create-account": true,
-  "/profile": true,
 };
 
 // 토큰을 검증하는 헬퍼 함수

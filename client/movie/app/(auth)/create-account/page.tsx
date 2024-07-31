@@ -47,11 +47,11 @@ export default function CreateAccount() {
       body: JSON.stringify(form),
     });
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       setSuccess("Account created successfully");
       setTimeout(() => {
         router.push("/login");
-      }, 2000);
+      });
     } else {
       const data = await res.json();
       setError(data.message);
