@@ -19,6 +19,7 @@ class dbcon {
   async create(){
     await this.client.query('CREATE TABLE IF NOT EXISTS member (member_id SERIAL, name TEXT, id TEXT PRIMARY KEY, password TEXT)');
     await this.client.query('CREATE TABLE IF NOT EXISTS post (post_id SERIAL PRIMARY KEY, title TEXT, content TEXT, id TEXT REFERENCES member(id))');
+    await this.client.query('INSERT INTO post (title, content, id) VALUES ($1, $2, $3)', ['title1', 'content1', 'jth0809@naver.com']);
   }
   async selectPosts(limit){
     //const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC LIMIT $1 OFFSET $2',limit);

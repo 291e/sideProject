@@ -3,7 +3,7 @@ const passport = require('./auth/passport');
 const postService = require('./service/postService');
 const router = express.Router();
 
-router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.get('/', async function (req, res) {
     //const limit = req.query.limit;
     try{
         const posts = await postService.getPosts();
