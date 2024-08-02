@@ -6,10 +6,8 @@ import Link from "next/link";
 
 const PostsPage = () => {
   const { data, error, isLoading } = useQuery("posts", fetchPosts);
-
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error fetching posts</div>;
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Posts</h1>
@@ -17,9 +15,9 @@ const PostsPage = () => {
         Create a new post
       </Link>
       <ul>
-        {data?.data.map((post: any) => (
-          <li key={post._id}>
-            <Link href={`/posts/${post._id}`} className="text-blue-500">
+        {data?.data?.posts.map((post: any) => (
+          <li key={post.post_id}>
+            <Link href={`/posts/${post.post_id}?id=${post.post_id}`} className="text-blue-500">
               {post.title}
             </Link>
           </li>
