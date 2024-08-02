@@ -23,7 +23,7 @@ class dbcon {
   }
   async selectPosts(limit){
     //const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC LIMIT $1 OFFSET $2',limit);
-    const result = await this.client.query('SELECT post_id, title, id FROM post');
+    const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC');
     return result.rows;
   }
   async selectPost(id){

@@ -9,18 +9,19 @@ router.get('/', async function (req, res) {
         const posts = await postService.getPosts();
         res.status(200).json({ posts });
     }
-    catch{
-        res.status(500).json({ message: 'Get Failed' });
+    catch(err){
+        res.status(500).json({ message: err.message});
     }
 });
 
-router.get('/{id}', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.get('/:id', async function (req, res) {
+    const { id = '' } = req.params;
     try{
       const post = await postService.getPost(id);
       res.status(200).json({ post });
     }
-    catch{
-      res.status(500).json({ message: 'Get Failed' });
+    catch(err){
+      res.status(500).json({ message: err.message });
     }
 });
 
@@ -36,8 +37,12 @@ router.post('/', passport.authenticate('jwt', { session: false }), async functio
     }
 });
 
-router.put('/{id}', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.put('/:id', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const { title = '', content = '' } = req.body;
+    const { id = '' } = req.params;
+    console.log(id);
+    console.log(title);
+    console.log(content);
     try{
       await postService.postUpdate([title, content, id]);
       res.status(200).json({ message: 'Update Success' });
@@ -47,7 +52,8 @@ router.put('/{id}', passport.authenticate('jwt', { session: false }), async func
     }
 });
 
-router.delete('/{id}', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), async function (req, res) {
+    const { id = '' } = req.params;
     try{
       await postService.postDelete(id);
       res.status(200).json({ message: 'Delete Success' });

@@ -32,7 +32,7 @@ const EditPostPage = () => {
     },
     {
       onSuccess: () => {
-        router.push(`/posts/${id}`);
+        router.push(`/posts/${id}?id=${id}`);
       },
     }
   );
