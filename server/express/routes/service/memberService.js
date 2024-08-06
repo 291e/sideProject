@@ -1,13 +1,14 @@
-const db = require('../../db');
+import { selectMember, updateMember, deleteMember } from '../../db';
+
 class memberService{
     async memberInfo(id){
-        return await db.selectMember(id);
+        return await selectMember(id);
     }
     async memberUpdate(member){
-        await db.updateMember(member);
+        await updateMember(member);
     }
     async memberDelete(id){
-        await db.deleteMember(id);
+        await deleteMember(id);
     }
 }
-module.exports = new memberService;
+export default new memberService;

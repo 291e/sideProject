@@ -1,22 +1,22 @@
-const express = require('express');
-const passport = require('./auth/passport');
-const router = express.Router();
-const memberService = require('./service/memberService');
+import { Router } from 'express';
+import { authenticate } from './auth/passport';
+import { memberInfo, memberDelete, memberUpdate } from './service/memberService';
+const router = Router();
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.get('/profile', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.get('/profile', authenticate('jwt', { session: false }), async function (req, res) {
   const id = req.user.id;
-  const member = await memberService.memberInfo(id);
+  const member = await memberInfo(id);
   res.status(200).json({ username: member.name });
 });
 
-router.delete('/profile', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.delete('/profile', authenticate('jwt', { session: false }), async function (req, res) {
   const id = req.user.id;
   try{
-    await memberService.memberDelete(id);
+    await memberDelete(id);
     res.status(200).json({ message: 'Delete Success' });
   }
   catch{
@@ -24,11 +24,11 @@ router.delete('/profile', passport.authenticate('jwt', { session: false }), asyn
   }
 });
 
-router.post('/profile/modify', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.post('/profile/modify', authenticate('jwt', { session: false }), async function (req, res) {
   //입력값 검증 필요
   const member = Object.values(req.body);
   try{
-    await memberService.memberUpdate(member);
+    await memberUpdate(member);
     res.status(200).json({ message: 'Update Success' });
   }
   catch{
@@ -37,4 +37,4 @@ router.post('/profile/modify', passport.authenticate('jwt', { session: false }),
 });
 
 
-module.exports = router;
+export default router;

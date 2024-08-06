@@ -1,26 +1,26 @@
-const db = require('../../db');
+import { selectPosts, selectPost, insertPost, updatePost, deletePost, updateMember, deleteMember } from '../../db';
 
 class postService{
     async getPosts(){
-        return await db.selectPosts();
+        return await selectPosts();
     }
     async getPost(id){
-        return await db.selectPost(id);
+        return await selectPost(id);
     }
     async postCreate(post){
-        await db.insertPost(post);
+        await insertPost(post);
     }
     async postUpdate(post){
-        await db.updatePost(post);
+        await updatePost(post);
     }
     async postDelete(id){
-        await db.deletePost(id);
+        await deletePost(id);
     }
     async memberUpdate(member){
-        await db.updateMember(member);
+        await updateMember(member);
     }
     async memberDelete(id){
-        await db.deleteMember(id);
+        await deleteMember(id);
     }
 }
-module.exports = new postService;
+export default new postService;

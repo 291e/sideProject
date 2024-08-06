@@ -1,12 +1,12 @@
-const express = require('express');
-const passport = require('./auth/passport');
-const postService = require('./service/postService');
-const router = express.Router();
+import { Router } from 'express';
+import { authenticate } from './auth/passport';
+import { getPosts, getPost, postCreate, postUpdate, postDelete } from './service/postService';
+const router = Router();
 
 router.get('/', async function (req, res) {
     //const limit = req.query.limit;
     try{
-        const posts = await postService.getPosts();
+        const posts = await getPosts();
         res.status(200).json({ posts });
     }
     catch(err){
@@ -17,7 +17,7 @@ router.get('/', async function (req, res) {
 router.get('/:id', async function (req, res) {
     const { id = '' } = req.params;
     try{
-      const post = await postService.getPost(id);
+      const post = await getPost(id);
       res.status(200).json({ post });
     }
     catch(err){
@@ -25,11 +25,11 @@ router.get('/:id', async function (req, res) {
     }
 });
 
-router.post('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.post('/', authenticate('jwt', { session: false }), async function (req, res) {
     const { title = '', content = '' } = req.body;
     const id = req.user.id;
     try{
-      await postService.postCreate([title, content, id]);
+      await postCreate([title, content, id]);
       res.status(200).json({ message: 'Create Success' });
     }
     catch{
@@ -37,14 +37,14 @@ router.post('/', passport.authenticate('jwt', { session: false }), async functio
     }
 });
 
-router.put('/:id', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.put('/:id', authenticate('jwt', { session: false }), async function (req, res) {
     const { title = '', content = '' } = req.body;
     const { id = '' } = req.params;
     console.log(id);
     console.log(title);
     console.log(content);
     try{
-      await postService.postUpdate([title, content, id]);
+      await postUpdate([title, content, id]);
       res.status(200).json({ message: 'Update Success' });
     }
     catch{
@@ -52,10 +52,10 @@ router.put('/:id', passport.authenticate('jwt', { session: false }), async funct
     }
 });
 
-router.delete('/:id', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.delete('/:id', authenticate('jwt', { session: false }), async function (req, res) {
     const { id = '' } = req.params;
     try{
-      await postService.postDelete(id);
+      await postDelete(id);
       res.status(200).json({ message: 'Delete Success' });
     }
     catch{
@@ -63,4 +63,4 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), async fu
     }
 });
 
-module.exports = router;
+export default router;
