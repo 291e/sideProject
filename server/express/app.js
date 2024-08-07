@@ -1,34 +1,36 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var passport = require('passport');
-const cors = require('cors');
+import createError from 'http-errors';
+import express, { json, urlencoded, static as _static} from 'express';
+import { join } from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import { initialize } from 'passport';
+import cors from 'cors';
 
 
-var usersRouter = require('./routes/users');
-var authRouter = require('./routes/auth');
-var postRouter = require('./routes/post');
+import usersRouter from './routes/users';
+import authRouter from './routes/auth';
+import postRouter from './routes/post';
+import movieRouter from './routes/movie';
 
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(cors());
-app.use(passport.initialize());
+app.use(initialize());
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(_static(join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/movies', movieRouter);
 
 
 // catch 404 and forward to error handler
@@ -47,4 +49,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+export default app;

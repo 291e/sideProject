@@ -1,12 +1,12 @@
-const validator = require('validator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const db = require('../../db');
+import { isAlphanumeric, isEmail } from 'validator';
+import { compare, hash as _hash } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
+import { authMember, begin, insertMember, commit, rollback } from '../../db';
 
 class authService {
     async signup(username, email, password){
 
-        if(!validator.isAlphanumeric(username) || !validator.isEmail(email) || !validator.isAlphanumeric(password)){
+        if(!isAlphanumeric(username) || !isEmail(email) || !isAlphanumeric(password)){
                 return [400, 'Invalid String'];
         }
         else{
@@ -21,17 +21,17 @@ class authService {
     }
 
     async login(email, password){
-        if(!validator.isEmail(email) || !validator.isAlphanumeric(password)){
+        if(!isEmail(email) || !isAlphanumeric(password)){
             return [400, 'Invalid String'];
         }
         else{
             try{
-                const hash = await db.authMember(email);
-                const isMatch = await bcrypt.compare(password, hash.password);
+                const hash = await authMember(email);
+                const isMatch = await compare(password, hash.password);
             
                 if(isMatch){
                 //jwt token 발급
-                    const token = await jwt.sign({ id: email }, process.env.JWT_SECRET, { algorithm: 'HS256', expiresIn: '20m' });
+                    const token = await sign({ id: email }, process.env.JWT_SECRET, { algorithm: 'HS256', expiresIn: '20m' });
                     return [200, token];
                 }
                 else{
@@ -48,16 +48,16 @@ class authService {
         const saltRounds = 10;
     
         try {
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-            await db.begin();
-            await db.insertMember(username,id,hashedPassword);
-            await db.commit();
+            const hashedPassword = await _hash(password, saltRounds);
+            await begin();
+            await insertMember(username,id,hashedPassword);
+            await commit();
         } 
         catch (err) {
-            await db.rollback();
+            await rollback();
             throw new Error('Duplicate id');
         }
     }
 }
 
-module.exports = new authService;
+export default new authService;
