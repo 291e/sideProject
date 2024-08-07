@@ -45,7 +45,7 @@ class dbcon {
     }
   }
   async updatePost(post){
-    await this.client.query('UPDATE post SET title = $1, content = $2 WHERE post_id = $3',post);
+    await this.client.query('UPDATE post SET title = $1, content = $2 WHERE post_id = $3 AND id = $4',post);
   }
   async deletePost(post_id, id){
     await this.client.query('DELETE FROM post WHERE post_id = $1 AND id = $2',[post_id, id]);

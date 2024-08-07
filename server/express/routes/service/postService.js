@@ -17,8 +17,8 @@ class postService {
     async postUpdate(post){
         await updatePost(post);
     }
-    async postDelete(id){
-        await deletePost(id);
+    async postDelete(post_id, user_id){
+        await deletePost(post_id, user_id);
     }
 
     async getComments(post_id){

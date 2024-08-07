@@ -39,29 +39,31 @@ router.post('/', authenticate('jwt', { session: false }), async function (req, r
       res.status(500).json({ message: 'Create Failed' });
     }
 });
-
 router.put('/:id', authenticate('jwt', { session: false }), async function (req, res) {
     const { title = '', content = '' } = req.body;
-    const { id = '' } = req.params;
+    const { post_id = '' } = req.params;
+    const { user_id = '' } = req.user.id;
     try{
-      await postUpdate([title, content, id]);
+      await postUpdate([title, content, post_id, user_id]);
       res.status(200).json({ message: 'Update Success' });
     }
     catch{
       res.status(500).json({ message: 'Update Failed' });
     }
 });
-
 router.delete('/:id', authenticate('jwt', { session: false }), async function (req, res) {
-    const { id = '' } = req.params;
+    const { post_id = '' } = req.params;
+    const { user_id = '' } = req.user.id;
     try{
-      await postDelete(id);
+      await postDelete(post_id, user_id);
       res.status(200).json({ message: 'Delete Success' });
     }
     catch{
       res.status(500).json({ message: 'Delete Failed' });
     }
 });
+
+
 
 router.post('/like/:post_id', authenticate('jwt', { session: false }), async function (req, res) {
   const { post_id = '' } = req.params;
@@ -87,6 +89,8 @@ router.delete('/like/:like_id', authenticate('jwt', { session: false }), async f
   }
 });
 
+
+
 router.post('/comment/:post_id', authenticate('jwt', { session: false }), async function (req, res) {
   const { post_id = '' } = req.params;
   const { user_id = '' } = req.user.id;
@@ -99,7 +103,6 @@ router.post('/comment/:post_id', authenticate('jwt', { session: false }), async 
     res.status(500).json({ message: 'Comment Create Failed' });
   }
 });
-
 router.put('/comment/:comment_id', authenticate('jwt', { session: false }), async function (req, res) {
   const { comment = '' } = req.body;
   const { comment_id = '' } = req.params;
@@ -112,7 +115,6 @@ router.put('/comment/:comment_id', authenticate('jwt', { session: false }), asyn
     res.status(500).json({ message: 'Comment Update Failed' });
   }
 });
-
 router.delete('/comment/:comment_id', authenticate('jwt', { session: false }), async function (req, res) {
   const {comment_id = ''} = req.params;
   const {user_id = ''} = req.user.id;
