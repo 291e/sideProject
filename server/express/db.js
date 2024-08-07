@@ -30,8 +30,8 @@ class dbcon {
     const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC');
     return result.rows;
   }
-  async selectPost(id){
-    const result = await this.client.query('SELECT title, content, id FROM post WHERE post_id = $1',[id]);
+  async selectPost(post_id){
+    const result = await this.client.query('SELECT title, content, id FROM post WHERE post_id = $1',[post_id]);
     return result.rows[0];
   }
   async insertPost(post){
