@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate } from './auth/passport';
+import { authenticate } from './authStrategy/passport';
 import movieService from './service/movieService';
 const router = Router();
 
