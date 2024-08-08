@@ -4,11 +4,11 @@ import { Pool } from 'pg';
 class dbcon {
   constructor(){
     this.client = new Pool({
-      user: process.env.DB_USER,
-      host: process.env.DB_HOST,
-      database: process.env.DB_DATABASE,
-      password: process.env.DB_PASSWORD,
-      port: process.env.DB_PORT,
+      user: process.env.MEMBER_DB_USER,
+      host: process.env.MEMBER_DB_HOST,
+      database: process.env.MEMBER_DB_DATABASE,
+      password: process.env.MEMBER_DB_PASSWORD,
+      port: process.env.MEMBER_DB_PORT,
     });
     this.connect();
     this.create();
@@ -22,9 +22,22 @@ class dbcon {
     await this.client.query('CREATE TABLE IF NOT EXISTS comment (comment_id SERIAL PRIMARY KEY, comment TEXT, post_id INT REFERENCES post(post_id), id TEXT REFERENCES member(id))');
     await this.client.query('CREATE TABLE IF NOT EXISTS like (post_id INT REFERENCES post(post_id), id TEXT REFERENCES member(id), PRIMARY KEY(post_id, id))');
     await this.client.query('CREATE TABLE IF NOT EXISTS follow (follow_id SERIAL PRIMARY KEY, follower TEXT REFERENCES member(id), following TEXT REFERENCES member(id))');
-    //await this.client.query('CREATE TABLE IF NOT EXISTS movie (movie_id SERIAL PRIMARY KEY, title TEXT, director TEXT, year INT, rating INT)');
+    
+    //DB분리해야함
+    await this.client.query('CREATE TABLE movie (movie_id TEXT PRIMARY KEY, title TEXT, year INT, rating TEXT, plot TEXT, runtime TEXT, company TEXT)');
+    await this.client.query('CREATE TABLE director (director_id TEXT PRIMARY KEY, director_name TEXT)');
+    await this.client.query('CREATE TABLE actor (actor_id TEXT PRIMARY KEY, actor_name TEXT)');
+    await this.client.query('CREATE TABLE staff (staff_id TEXT PRIMARY KEY, staff_name TEXT)');
+    await this.client.query('CREATE TABLE genre (genre_id TEXT PRIMARY KEY, genre_name TEXT)');
+    await this.client.query('CREATE TABLE keyword (keyword_id SERIAL PRIMARY KEY, keyword_name TEXT)');
+    await this.client.query('CREATE TABLE poster(poster_id SERIAL PRIMARY KEY, movie_id TEXT REFERENCES Movie(movie_id), poster_url TEXT)');
+    
+    await this.client.query('CREATE TABLE movieDirector (movie_id TEXT REFERENCES Movie(movie_id), director_id TEXT REFERENCES Director(director_id), PRIMARY KEY(movie_id, director_id))');
+    await this.client.query('CREATE TABLE movieActor (movie_id TEXT REFERENCES Movie(movie_id), actor_id TEXT REFERENCES Actor(actor_id), PRIMARY KEY(movie_id, actor_id))');
+    await this.client.query('CREATE TABLE movieStaff (movie_id TEXT REFERENCES Movie(movie_id), staff_id TEXT REFERENCES Staff(staff_id), PRIMARY KEY(movie_id, staff_id))');
+    await this.client.query('CREATE TABLE movieGenre (movie_id TEXT REFERENCES Movie(movie_id), genre_id TEXT REFERENCES Genre(genre_id), PRIMARY KEY(movie_id, genre_id))');
+    await this.client.query('CREATE TABLE movieKeyword (movie_id TEXT REFERENCES Movie(movie_id),keyword_id INT REFERENCES Keyword(keyword_id) PRIMARY KEY(movie_id, keyword_id))');
   }
-
   async selectPosts(limit){
     //const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC LIMIT $1 OFFSET $2',limit);
     const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC');
