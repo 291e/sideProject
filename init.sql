@@ -39,8 +39,10 @@ CREATE TABLE IF NOT EXISTS follow (
 
 CREATE TABLE IF NOT EXISTS movie(
     movie_id TEXT PRIMARY KEY, 
-    title TEXT, year INT, 
-    rating TEXT, plot TEXT, 
+    title TEXT, 
+    repRlsDate INT, 
+    rating TEXT, 
+    plot TEXT, 
     runtime TEXT, 
     company TEXT
 );
@@ -56,7 +58,7 @@ CREATE TABLE IF NOT EXISTS actor (
 );
 
 CREATE TABLE IF NOT EXISTS genre (
-    genre_id TEXT PRIMARY KEY, 
+    genre_id SERIAL PRIMARY KEY, 
     genre_name TEXT
 );
 
@@ -85,7 +87,7 @@ CREATE TABLE IF NOT EXISTS movieActor (
 
 CREATE TABLE IF NOT EXISTS movieGenre (
     movie_id TEXT REFERENCES movie(movie_id), 
-    genre_id TEXT REFERENCES genre(genre_id), 
+    genre_id TEXT REFERENCES genre(genre_name), 
     PRIMARY KEY(movie_id, genre_id)
 );
 

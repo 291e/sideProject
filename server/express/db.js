@@ -16,6 +16,46 @@ class dbcon {
     await this.client.connect();
   }
 
+  async insertMovie(movie){
+    try {
+      await this.begin();
+      await this.client.query('INSERT INTO movie (movie_id, title, repRlsDate, rating, plot, runtime, company) VALUES ($1, $2, $3, $4, $5, $6, $7)',movie);
+      await this.commit();
+    }
+    catch{
+      await this.rollback();
+    }
+  }
+  async insertGenre(genre){
+    await this.client.query('INSERT INTO genre (genre_name) VALUES ($1)',genre);
+  }
+  async insertDirector(director){
+    await this.client.query('INSERT INTO director (director_id, director_name) VALUES ($1, $2)',director);
+  }
+  async insertActor(actor){
+    await this.client.query('INSERT INTO actor (actor_id, actor_name) VALUES ($1, $2)',actor);
+  }
+  async insertPoster(poster){
+    await this.client.query('INSERT INTO poster (movie_id, poster_url) VALUES ($1, $2)',poster);
+  }
+  async insertKeyword(keyword){
+    await this.client.query('INSERT INTO keyword (keyword_name) VALUES ($1)',keyword);
+  }
+
+  async insertMovieGenre(MovieGenre){
+    await this.client.query('INSERT INTO movie_genre (movie_id, genre_id) VALUES ($1, $2)',MovieGenre);
+  }
+  async insertMovieDirector(MovieDirector){
+    await this.client.query('INSERT INTO movie_director (movie_id, director_id) VALUES ($1, $2)',MovieDirector);
+  }
+  async insertMovieActor(MovieActor){
+    await this.client.query('INSERT INTO movie_actor (movie_id, actor_id) VALUES ($1, $2)',MovieActor);
+  }
+  async insertMovieKeyword(MovieKeyword){
+    await this.client.query('INSERT INTO movie_keyword (movie_id, keyword_id) VALUES ($1, $2)',MovieKeyword);
+  }
+
+
   async selectPosts(limit){
     //const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC LIMIT $1 OFFSET $2',limit);
     const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC');
