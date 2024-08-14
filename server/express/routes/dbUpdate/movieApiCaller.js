@@ -4,11 +4,10 @@ import db from '../../db';
 dotenv.config();
 
 
-const movieApiCaller = async (req, res) => {
+const movieApiCaller = async () => {
   let startCount = 0;
   for (let i = 0; i <= 100; i++) {
     const url = `http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?ServiceKey=`+ process.env.KMDB_API_KEY + `&collection=kmdb_new2&detail=Y&listCount=1000&startCount=${startCount}`;
-    startCount += 1000;
     try {
       const response = await axios.get(url);
       for (let j = 0; j < 1000; j++) {
@@ -74,6 +73,7 @@ const movieApiCaller = async (req, res) => {
     } catch (error) {
       
     }
+    startCount += 1000;
   }
 }
 
