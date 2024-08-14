@@ -1,12 +1,12 @@
-import { Router } from 'express';
-import { authenticate } from './authStrategy/passport';
-import { getPosts, getPost, postCreate, postUpdate, postDelete, getComments, commentCreate, commentUpdate, commentDelete, getLikes, getLike, likeCreate, likeDelete } from './service/postService';
-const router = Router();
+const express = require('express');
+const passport = require('./authStrategy/passport');
+const postService = require('./service/postService');
+const router = express.Router();
 
 router.get('/', async function (req, res) {
     //const limit = req.query.limit;
     try{
-        const posts = await getPosts();
+        const posts = await postService.getPosts();
         res.status(200).json({ posts });
     }
     catch(err){
@@ -17,10 +17,10 @@ router.get('/', async function (req, res) {
 router.get('/:id', async function (req, res) {
     const { id = '' } = req.params;
     try{
-      const post = await getPost(id);
-      const comments = await getComments(id);
-      const likes = await getLikes(id);
-      const like = await getLike(id, req.user.id);
+      const post = await postService.getPost(id);
+      const comments = await postService.getComments(id);
+      const likes = await postService.getLikes(id);
+      const like = await postService.getLike(id, req.user.id);
       res.status(200).json({ post, comments, likes, like });
     }
     catch(err){
@@ -28,34 +28,34 @@ router.get('/:id', async function (req, res) {
     }
 });
 
-router.post('/', authenticate('jwt', { session: false }), async function (req, res) {
+router.post('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const { title = '', content = '' } = req.body;
     const id = req.user.id;
     try{
-      await postCreate([title, content, id]);
+      await postService.postCreate([title, content, id]);
       res.status(200).json({ message: 'Create Success' });
     }
     catch{
       res.status(500).json({ message: 'Create Failed' });
     }
 });
-router.put('/:id', authenticate('jwt', { session: false }), async function (req, res) {
+router.put('/:id', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const { title = '', content = '' } = req.body;
     const { post_id = '' } = req.params;
     const { user_id = '' } = req.user.id;
     try{
-      await postUpdate([title, content, post_id, user_id]);
+      await postService.postUpdate([title, content, post_id, user_id]);
       res.status(200).json({ message: 'Update Success' });
     }
     catch{
       res.status(500).json({ message: 'Update Failed' });
     }
 });
-router.delete('/:id', authenticate('jwt', { session: false }), async function (req, res) {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const { post_id = '' } = req.params;
     const { user_id = '' } = req.user.id;
     try{
-      await postDelete(post_id, user_id);
+      await postService.postDelete(post_id, user_id);
       res.status(200).json({ message: 'Delete Success' });
     }
     catch{
@@ -65,11 +65,11 @@ router.delete('/:id', authenticate('jwt', { session: false }), async function (r
 
 
 
-router.post('/like/:post_id', authenticate('jwt', { session: false }), async function (req, res) {
+router.post('/like/:post_id', passport.authenticate('jwt', { session: false }), async function (req, res) {
   const { post_id = '' } = req.params;
   const { user_id = '' } = req.user.id;
   try{
-    await likeCreate(post_id, user_id);
+    await postService.likeCreate(post_id, user_id);
     res.status(200).json({ message: 'Like Success' });
   }
   catch{
@@ -77,11 +77,11 @@ router.post('/like/:post_id', authenticate('jwt', { session: false }), async fun
   }
 });
 
-router.delete('/like/:like_id', authenticate('jwt', { session: false }), async function (req, res) {
+router.delete('/like/:like_id', passport.authenticate('jwt', { session: false }), async function (req, res) {
   const { like_id = '' } = req.params;
   const { user_id = '' } = req.user.id;
   try{
-    await likeDelete(like_id, user_id);
+    await postService.likeDelete(like_id, user_id);
     res.status(200).json({ message: 'Like Delete Success' });
   }
   catch{
@@ -91,35 +91,35 @@ router.delete('/like/:like_id', authenticate('jwt', { session: false }), async f
 
 
 
-router.post('/comment/:post_id', authenticate('jwt', { session: false }), async function (req, res) {
+router.post('/comment/:post_id', passport.authenticate('jwt', { session: false }), async function (req, res) {
   const { post_id = '' } = req.params;
   const { user_id = '' } = req.user.id;
   const { comment = '' } = req.body;
   try{
-    await commentCreate(comment, post_id, user_id);
+    await postService.commentCreate(comment, post_id, user_id);
     res.status(200).json({ message: 'Comment Create Success' });
   }
   catch{
     res.status(500).json({ message: 'Comment Create Failed' });
   }
 });
-router.put('/comment/:comment_id', authenticate('jwt', { session: false }), async function (req, res) {
+router.put('/comment/:comment_id', passport.authenticate('jwt', { session: false }), async function (req, res) {
   const { comment = '' } = req.body;
   const { comment_id = '' } = req.params;
   const { user_id = '' } = req.user.id;
   try{
-    await commentUpdate(comment, comment_id, user_id);
+    await postService.commentUpdate(comment, comment_id, user_id);
     res.status(200).json({ message: 'Comment Update Success' });
   }
   catch{
     res.status(500).json({ message: 'Comment Update Failed' });
   }
 });
-router.delete('/comment/:comment_id', authenticate('jwt', { session: false }), async function (req, res) {
+router.delete('/comment/:comment_id', passport.authenticate('jwt', { session: false }), async function (req, res) {
   const {comment_id = ''} = req.params;
   const {user_id = ''} = req.user.id;
   try{
-    await commentDelete(comment_id, user_id);
+    await postService.commentDelete(comment_id, user_id);
     res.status(200).json({ message: 'Comment Delete Success' });
   }
   catch{
@@ -127,4 +127,4 @@ router.delete('/comment/:comment_id', authenticate('jwt', { session: false }), a
   }
 });
 
-export default router;
+module.exports = router;

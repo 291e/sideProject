@@ -1,5 +1,5 @@
 require('dotenv').config();
-import { Pool } from 'pg';
+const { Pool } = require('pg');
 
 class dbcon {
   constructor(){
@@ -185,4 +185,4 @@ class dbcon {
   }
 }
 
-export default new dbcon;
+module.exports = new dbcon;

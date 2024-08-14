@@ -1,6 +1,6 @@
-import passport, { use } from 'passport';
-import { authMember } from '../../db';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+const passport = require('passport');
+const db = require('../../db');
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 require('dotenv').config();
 
 const opts = {
@@ -9,10 +9,10 @@ const opts = {
   algorithms: ['HS256']
 };
 
-use(new JwtStrategy(opts, async (jwt_payload, done) => {
+passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
   try {
     console.log(jwt_payload);
-    await authMember(jwt_payload.id);
+    await db.authMember(jwt_payload.id);
     return done(null, jwt_payload);
   } 
   catch (err) {
@@ -20,4 +20,4 @@ use(new JwtStrategy(opts, async (jwt_payload, done) => {
   }
 }));
 
-export default passport;
+module.exports = passport;
