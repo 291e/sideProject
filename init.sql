@@ -1,7 +1,3 @@
-/c postgres
-
-CREATE DATABASE member;
-
 \c member
 
 CREATE TABLE IF NOT EXISTS member (
@@ -25,7 +21,7 @@ CREATE TABLE IF NOT EXISTS comment (
     id TEXT REFERENCES member(id)
 );
 
-CREATE TABLE IF NOT EXISTS like (
+CREATE TABLE IF NOT EXISTS likepoint (
     post_id INT REFERENCES post(post_id), 
     id TEXT REFERENCES member(id), 
     PRIMARY KEY(post_id, id)
@@ -40,7 +36,7 @@ CREATE TABLE IF NOT EXISTS follow (
 CREATE TABLE IF NOT EXISTS movie(
     movie_id TEXT PRIMARY KEY, 
     title TEXT, 
-    repRlsDate INT, 
+    repRlsDate TEXT,
     rating TEXT, 
     plot TEXT, 
     runtime TEXT, 
@@ -58,13 +54,13 @@ CREATE TABLE IF NOT EXISTS actor (
 );
 
 CREATE TABLE IF NOT EXISTS genre (
-    genre_id SERIAL PRIMARY KEY, 
-    genre_name TEXT
+    genre_id SERIAL, 
+    genre_name TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS keyword (
-    keyword_id SERIAL PRIMARY KEY, 
-    keyword_name TEXT
+    keyword_id SERIAL, 
+    keyword_name TEXT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS poster(
@@ -93,7 +89,7 @@ CREATE TABLE IF NOT EXISTS movieGenre (
 
 CREATE TABLE IF NOT EXISTS movieKeyword (
     movie_id TEXT REFERENCES movie(movie_id), 
-    keyword_id INT REFERENCES keyword(keyword_id), 
+    keyword_id TEXT REFERENCES keyword(keyword_name),
     PRIMARY KEY(movie_id, keyword_id)
 );
 
@@ -101,6 +97,6 @@ CREATE TABLE IF NOT EXISTS movieReview (
     review_id SERIAL PRIMARY KEY, 
     movie_id TEXT REFERENCES movie(movie_id), 
     id TEXT REFERENCES member(id), 
-    rating INT, 
+    rating TEXT, 
     review TEXT
 );

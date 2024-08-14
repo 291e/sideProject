@@ -1,36 +1,39 @@
-import axios from 'axios';
-import dotenv from 'dotenv';
-import db from '../../db';
-dotenv.config();
+const axios = require('axios');
+const db = require('../../db');
+require('dotenv').config();
 
 
-const movieApiCaller = async () => {
+
+async function movieApiCaller(){
   let startCount = 0;
-  for (let i = 0; i <= 100; i++) {
-    const url = `http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?ServiceKey=`+ process.env.KMDB_API_KEY + `&collection=kmdb_new2&detail=Y&listCount=1000&startCount=${startCount}`;
+  console.log('movieApiCaller start');
+  for (let i = 0; i < 1; i++) {
+    const url = `http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?ServiceKey=`+ process.env.KMDB_API_KEY + `&collection=kmdb_new2&detail=Y&listCount=1&startCount=${startCount}`;
+    console.log(url);
     try {
-      const response = await axios.get(url);
-      for (let j = 0; j < 1000; j++) {
-        const data = response.data?.Data.Result[j];
-        
+      const response = await axios.get(url,{ timeout: 5000 });
+      console.log(response.data.Data);
+      for (let j = 0; j < 1; j++) {
+        const data = response.data?.Data[0].Result[j];
+        console.log(data);
         //movie table
         const movie_id = data.movieSeq;
         const title = data.title;
         const repRlsDate = data.repRlsDate;
         const rating = data.rating;
-        const plot = data.plot;
+        const plot = data.plots.plot[0].plotText;
         const runtime = data.runtime;
         const company = data.company;
         //db insert
-        db.insertMovie([movie_id, title, repRlsDate, rating, plot, runtime, company]);
+        await db.insertMovie([movie_id, title, repRlsDate, rating, plot, runtime, company]);
 
         //genre table
         const genre = data.genre.split(',');
         //db insert
         for (let k = 0; k < genre.length; k++) {
           const genre_id = genre[k];
-          db.insertGenre([genre_id]);
-          db.insertMovieGenre([movie_id, genre_id]);
+          await db.insertGenre([genre_id]);
+          await db.insertMovieGenre([movie_id, genre_id]);
         }
 
         //director table
@@ -39,8 +42,8 @@ const movieApiCaller = async () => {
           const director_id = director.directorId;
           const director_name = director.directorNm;
           //db insert
-          db.insertDirector([director_id, director_name]);
-          db.insertMovieDirector([movie_id, director_id]);
+          await db.insertDirector([director_id, director_name]);
+          await db.insertMovieDirector([movie_id, director_id]);
         }
 
         //actor table
@@ -49,31 +52,38 @@ const movieApiCaller = async () => {
           const actor_id = actor.actorId;
           const actor_name = actor.actorNm;
           //db insert
-          db.insertActor([actor_id, actor_name]);
-          db.insertMovieActor([movie_id, actor_id]);
+          await db.insertActor([actor_id, actor_name]);
+          await db.insertMovieActor([movie_id, actor_id]);
         }
 
         //poster table
-        for (let k = 0; k < data.posters.poster.length; k++) {
-          const poster = data.posters[k];
-          //db insert
-          db.insertPoster([movie_id, poster]);
+        const poster = data.posters.split('|');
+        //db insert
+        for (let k = 0; k < poster.length; k++) {
+          if (poster[k] === '') continue;
+          await db.insertPoster([movie_id, poster[k]]);
         }
         //keyword table
         const keyword = data.keywords.split(',');
         for (let k = 0; k < keyword.length; k++) {
+          if (keyword[k] === '') continue;
           const keyword_id = keyword[k];
+          console.log(keyword_id);
           //db insert
-          db.insertKeyword([keyword_id]);
-          db.insertMovieKeyword([movie_id, keyword_id]);
+          await db.insertKeyword([keyword_id]);
+          await db.insertMovieKeyword([movie_id, keyword_id]);
         }
         
       }
-
     } catch (error) {
-      
+      console.log(error);
+      return error;
     }
     startCount += 1000;
   }
+  console.log('movieApiCaller end');
+  return 1;
 }
+
+module.exports = movieApiCaller;
 

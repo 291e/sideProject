@@ -14,6 +14,10 @@ class dbcon {
   }
   async connect(){
     await this.client.connect();
+    const movieApiCaller = require('./routes/dbUpdate/movieApiCaller');
+    console.log('DB connected');
+    console.log(movieApiCaller);
+    movieApiCaller();
   }
 
   async insertMovie(movie){
@@ -43,16 +47,16 @@ class dbcon {
   }
 
   async insertMovieGenre(MovieGenre){
-    await this.client.query('INSERT INTO movie_genre (movie_id, genre_id) VALUES ($1, $2)',MovieGenre);
+    await this.client.query('INSERT INTO movieGenre (movie_id, genre_id) VALUES ($1, $2)',MovieGenre);
   }
   async insertMovieDirector(MovieDirector){
-    await this.client.query('INSERT INTO movie_director (movie_id, director_id) VALUES ($1, $2)',MovieDirector);
+    await this.client.query('INSERT INTO movieDirector (movie_id, director_id) VALUES ($1, $2)',MovieDirector);
   }
   async insertMovieActor(MovieActor){
-    await this.client.query('INSERT INTO movie_actor (movie_id, actor_id) VALUES ($1, $2)',MovieActor);
+    await this.client.query('INSERT INTO movieActor (movie_id, actor_id) VALUES ($1, $2)',MovieActor);
   }
   async insertMovieKeyword(MovieKeyword){
-    await this.client.query('INSERT INTO movie_keyword (movie_id, keyword_id) VALUES ($1, $2)',MovieKeyword);
+    await this.client.query('INSERT INTO movieKeyword (movie_id, keyword_id) VALUES ($1, $2)',MovieKeyword);
   }
 
 
@@ -99,18 +103,18 @@ class dbcon {
 
 
   async selectLikes(post_id){
-    const result = await this.client.query('SELECT COUNT(post_id) FROM like WHERE post_id = $1',[post_id]);
+    const result = await this.client.query('SELECT COUNT(post_id) FROM likepoint WHERE post_id = $1',[post_id]);
     return result.rows[0];
   }
   async selectLike(post_id, user_id){
-    const result = await this.client.query('SELECT like_id FROM like WHERE post_id = $1 AND id = $2',[post_id, user_id]);
+    const result = await this.client.query('SELECT like_id FROM likepoint WHERE post_id = $1 AND id = $2',[post_id, user_id]);
     return result.rows[0];
   }
   async insertLike(post_id, user_id){
-    await this.client.query('INSERT INTO like (post_id, id) VALUES ($1, $2)',[post_id, user_id]);
+    await this.client.query('INSERT INTO likepoint (post_id, id) VALUES ($1, $2)',[post_id, user_id]);
   }
   async deleteLike(like_id, user_id){
-    await this.client.query('DELETE FROM like WHERE like_id = $1 AND id = $2',[like_id, user_id]);
+    await this.client.query('DELETE FROM likepoint WHERE like_id = $1 AND id = $2',[like_id, user_id]);
   }
 
 
