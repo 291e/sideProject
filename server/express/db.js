@@ -31,32 +31,32 @@ class dbcon {
     }
   }
   async insertGenre(genre){
-    await this.client.query('INSERT INTO genre (genre_name) VALUES ($1)',genre);
+    await this.client.query('INSERT INTO genre (genre_name) VALUES ($1) ON CONFLICT DO NOTHING',genre);
   }
   async insertDirector(director){
-    await this.client.query('INSERT INTO director (director_id, director_name) VALUES ($1, $2)',director);
+    await this.client.query('INSERT INTO director (director_id, director_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',director);
   }
   async insertActor(actor){
-    await this.client.query('INSERT INTO actor (actor_id, actor_name) VALUES ($1, $2)',actor);
+    await this.client.query('INSERT INTO actor (actor_id, actor_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',actor);
   }
   async insertPoster(poster){
-    await this.client.query('INSERT INTO poster (movie_id, poster_url) VALUES ($1, $2)',poster);
+    await this.client.query('INSERT INTO poster (movie_id, poster_url) VALUES ($1, $2) ON CONFLICT DO NOTHING',poster);
   }
   async insertKeyword(keyword){
-    await this.client.query('INSERT INTO keyword (keyword_name) VALUES ($1)',keyword);
+    await this.client.query('INSERT INTO keyword (keyword_name) VALUES ($1) ON CONFLICT DO NOTHING',keyword);
   }
 
   async insertMovieGenre(MovieGenre){
-    await this.client.query('INSERT INTO movieGenre (movie_id, genre_id) VALUES ($1, $2)',MovieGenre);
+    await this.client.query('INSERT INTO movieGenre (movie_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',MovieGenre);
   }
   async insertMovieDirector(MovieDirector){
-    await this.client.query('INSERT INTO movieDirector (movie_id, director_id) VALUES ($1, $2)',MovieDirector);
+    await this.client.query('INSERT INTO movieDirector (movie_id, director_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',MovieDirector);
   }
   async insertMovieActor(MovieActor){
-    await this.client.query('INSERT INTO movieActor (movie_id, actor_id) VALUES ($1, $2)',MovieActor);
+    await this.client.query('INSERT INTO movieActor (movie_id, actor_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',MovieActor);
   }
   async insertMovieKeyword(MovieKeyword){
-    await this.client.query('INSERT INTO movieKeyword (movie_id, keyword_id) VALUES ($1, $2)',MovieKeyword);
+    await this.client.query('INSERT INTO movieKeyword (movie_id, keyword_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',MovieKeyword);
   }
 
 

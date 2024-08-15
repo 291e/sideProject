@@ -5,17 +5,20 @@ require('dotenv').config();
 
 
 async function movieApiCaller(){
-  let startCount = 0;
+  let startCount = 8000;
   console.log('movieApiCaller start');
-  for (let i = 0; i < 1; i++) {
-    const url = `http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?ServiceKey=`+ process.env.KMDB_API_KEY + `&collection=kmdb_new2&detail=Y&listCount=1&startCount=${startCount}`;
+  for (let i = 0; i < 100; i++) {
+    const url = `http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?ServiceKey=`+ process.env.KMDB_API_KEY +`&collection=kmdb_new2&detail=Y&listCount=1000&startCount=${startCount}`;
     console.log(url);
     try {
-      const response = await axios.get(url,{ timeout: 5000 });
-      console.log(response.data.Data);
-      for (let j = 0; j < 1; j++) {
+      const response = await axios.get(url);
+      for (let j = 0; j < 1000; j++) {
+        if (response.data?.Data === undefined) {
+          console.log('no data '+startCount);
+          break;
+        }
         const data = response.data?.Data[0].Result[j];
-        console.log(data);
+        
         //movie table
         const movie_id = data.movieSeq;
         const title = data.title;
@@ -68,7 +71,6 @@ async function movieApiCaller(){
         for (let k = 0; k < keyword.length; k++) {
           if (keyword[k] === '') continue;
           const keyword_id = keyword[k];
-          console.log(keyword_id);
           //db insert
           await db.insertKeyword([keyword_id]);
           await db.insertMovieKeyword([movie_id, keyword_id]);
