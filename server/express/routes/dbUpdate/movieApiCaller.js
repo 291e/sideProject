@@ -3,8 +3,9 @@ const db = require('../../db');
 require('dotenv').config();
 
 
-
-async function movieApiCaller(){
+class movieApiCaller{
+  
+  async movieInfoApiCaller(){
   let startCount = 8000;
   console.log('movieApiCaller start');
   for (let i = 0; i < 100; i++) {
@@ -85,7 +86,28 @@ async function movieApiCaller(){
   }
   console.log('movieApiCaller end');
   return 1;
+  }
+  
+  async movieBoxOfficeCaller() {
+    const date = new Date();
+    const url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=' + process.env.KOBIS_API_KEY + '&targetDt='+date.getFullYear()+String(date.getMonth()).padStart(2, '0')+(date.getDate()-1);
+    const response = await axios.get(url);
+    console.log(url);
+    console.log(response.data);
+    const data = response.data.boxOfficeResult.dailyBoxOfficeList;
+    for (let i = 0; i < data.length; i++) {
+      const title = data[i].movieNm;
+      const repRlsDate = data[i].openDt;
+      const audi = data[i].audiAcc;
+      const sales = data[i].salesAcc;
+      const rank = data[i].rank;
+      const rankInten = data[i].rankInten;
+      const rankOldAndNew = data[i].rankOldAndNew;
+      const movie_id = await db.selectMovieTitleAndProdYear(title, repRlsDate);
+      await db.insertBoxOffice([movie_id, title, repRlsDate, audi, sales, rank, rankInten, rankOldAndNew]);
+    }
+    return 1;
+  }
 }
-
-module.exports = movieApiCaller;
+module.exports = new movieApiCaller;
 

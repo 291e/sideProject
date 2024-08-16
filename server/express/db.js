@@ -16,9 +16,61 @@ class dbcon {
     await this.client.connect();
     const movieApiCaller = require('./routes/dbUpdate/movieApiCaller');
     console.log('DB connected');
-    console.log(movieApiCaller);
-    movieApiCaller();
+    //await movieApiCaller.movieApiCaller();
+    //movieApiCaller.movieBoxOfficeCaller();
   }
+
+  async selectMovie(movie_id){
+    const result = await this.client.query('SELECT title, repRlsDate, rating, plot, runtime, company FROM movie WHERE movie_id = $1',[movie_id]);
+    return result.rows[0];
+  }
+  async selectGenres(movie_id){
+    const result = await this.client.query('SELECT genre_name FROM genre WHERE genre_name IN (SELECT genre_id  FROM movieGenre WHERE movie_id = $1)',[movie_id]);
+    return result.rows;
+  }
+  async selectDirectors(movie_id){
+    const result = await this.client.query('SELECT director_name FROM director WHERE director_id IN (SELECT director_id FROM movieDirector WHERE movie_id = $1)',[movie_id]);
+    return result.rows;
+  }
+  async selectActors(movie_id){
+    const result = await this.client.query('SELECT actor_name FROM actor WHERE actor_id IN (SELECT actor_id FROM movieActor WHERE movie_id = $1)',[movie_id]);
+    return result.rows;
+  }
+  async selectKeywords(movie_id){
+    const result = await this.client.query('SELECT keyword_name FROM keyword WHERE keyword_name IN (SELECT keyword_id FROM movieKeyword WHERE movie_id = $1)',[movie_id]);
+    return result.rows;
+  }
+  async selectPosters(movie_id){
+    const result = await this.client.query('SELECT poster_url FROM poster WHERE movie_id = $1',[movie_id]);
+    return result.rows;
+  }
+
+  async selectToDayBoxOffice(date){
+    const result = await this.client.query('SELECT movie_id, title, repRlsDate, audi, sales, rank, rankInten, rankOldAndNew FROM boxoffice WHERE BoxOffice_DATE = $1',[date]);
+    return result.rows;
+  }
+  async selectPoster(movie_id){
+    const result = await this.client.query('SELECT poster_url FROM poster WHERE movie_id = $1',[movie_id]);
+    return result.rows[0];
+  }
+
+  async selectMovieTitleAndProdYear(title, reprlsdate){
+    const searchTitle = ` ${title}`;
+    const result = await this.client.query('SELECT movie_id FROM movie WHERE title LIKE $1 AND repRlsDate = $2',[searchTitle, reprlsdate]);
+    return result.rows[0];
+  }
+
+  async insertBoxOffice(boxOffice){
+    try {
+      await this.begin();
+      await this.client.query('INSERT INTO boxoffice (movie_id, title, repRlsDate, audi, sales, rank, rankInten, rankOldAndNew) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',boxOffice);
+      await this.commit();
+    }
+    catch{
+      await this.rollback();
+    }
+  }
+
 
   async insertMovie(movie){
     try {
