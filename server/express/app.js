@@ -1,31 +1,30 @@
-import createError from 'http-errors';
-import express, { json, urlencoded, static as _static} from 'express';
-import { join } from 'path';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
-import { initialize } from 'passport';
-import cors from 'cors';
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const passport = require('passport');
+const cors = require('cors');
 
 
-import usersRouter from './routes/users';
-import authRouter from './routes/auth';
-import postRouter from './routes/post';
-import movieRouter from './routes/movie';
-
+const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
+const movieRouter = require('./routes/movie');
 
 var app = express();
 
 // view engine setup
-app.set('views', join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(cors());
-app.use(initialize());
+app.use(passport.initialize());
 app.use(logger('dev'));
-app.use(json());
-app.use(urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(_static(join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
@@ -49,4 +48,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-export default app;
+module.exports = app;
