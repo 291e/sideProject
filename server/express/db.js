@@ -19,6 +19,40 @@ class dbcon {
     //await movieApiCaller.movieApiCaller();
     //movieApiCaller.movieBoxOfficeCaller();
   }
+  async selectReviews(movie_id){
+    const result = await this.client.query('SELECT review_id, id, rating, review FROM movieReview WHERE movie_id = $1',[movie_id]);
+    return result.rows;
+  }
+  async insertReview(review){
+    try {
+      await this.begin();
+      await this.client.query('INSERT INTO movieReview (movie_id, id, rating, review) VALUES ($1, $2, $3, $4)',review);
+      await this.commit();
+    }
+    catch{
+      await this.rollback();
+    }
+  }
+  async updateReview(review){
+    try {
+      await this.begin();
+      await this.client.query('UPDATE movieReview SET rating = $3, review = $4 WHERE review_id = $1 AND id = $2',review);
+      await this.commit();
+    }
+    catch{
+      await this.rollback();
+    }
+  }
+  async deleteReview(review){
+    try {
+      await this.begin();
+      await this.client.query('DELETE FROM movieReview WHERE review_id = $1 AND id = $2',review);
+      await this.commit();
+    }
+    catch{
+      await this.rollback();
+    }
+  }
 
   async selectMovie(movie_id){
     const result = await this.client.query('SELECT title, repRlsDate, rating, plot, runtime, company FROM movie WHERE movie_id = $1',[movie_id]);

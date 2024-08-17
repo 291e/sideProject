@@ -93,8 +93,7 @@ CREATE TABLE IF NOT EXISTS movieKeyword (
     PRIMARY KEY(movie_id, keyword_id)
 );
 
-CREATE TABLE IF NOT EXISTS BoxOffice (
-    boxoffice_id SERIAL PRIMARY KEY, 
+CREATE TABLE IF NOT EXISTS BoxOffice ( 
     movie_id TEXT REFERENCES movie(movie_id), 
     title TEXT, 
     repRlsDate TEXT, 
@@ -103,14 +102,17 @@ CREATE TABLE IF NOT EXISTS BoxOffice (
     rank TEXT, 
     rankInten TEXT, 
     rankOldAndNew TEXT,
-    BoxOffice_DATE DATE DEFAULT CURRENT_DATE - INTERVAL '1 day'
+    BoxOffice_DATE DATE DEFAULT CURRENT_DATE - INTERVAL '1 day',
+    PRIMARY KEY(movie_id, BoxOffice_DATE)
 );
 
 
 CREATE TABLE IF NOT EXISTS movieReview (
     review_id SERIAL PRIMARY KEY, 
-    movie_id TEXT REFERENCES movie(movie_id), 
-    id TEXT REFERENCES member(id), 
-    rating TEXT, 
-    review TEXT
+    movie_id TEXT REFERENCES movie(movie_id) NOT NULL, 
+    member_id TEXT REFERENCES member(id) NOT NULL, 
+    rating TEXT NOT NULL, 
+    review TEXT,
+    review_date DATE DEFAULT CURRENT_DATE,
+    UNIQUE(movie_id, member_id)
 );

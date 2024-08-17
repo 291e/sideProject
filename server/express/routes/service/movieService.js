@@ -33,5 +33,18 @@ class movieService{
     async getPosters(movie_id){
         return await db.selectPosters(movie_id);
     }
+
+    async getReviews(movie_id){
+        return await db.selectReviews(movie_id);
+    }
+    async reviewCreate(review){
+        return await db.insertReview(review);
+    }
+    async reviewUpdate(review){
+        return await db.updateReview(review);
+    }
+    async reviewDelete(review){
+        return await db.deleteReview(review);
+    }
 }
 module.exports = new movieService;
