@@ -35,7 +35,7 @@ class authService {
                     return [200, token];
                 }
                 else{
-                    return [401,'invalid password'];
+                    return [401,'Invalid password'];
                 }
             }
             catch(err){
