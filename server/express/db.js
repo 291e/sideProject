@@ -17,7 +17,7 @@ class dbcon {
     const movieApiCaller = require('./routes/dbUpdate/movieApiCaller');
     console.log('DB connected');
     //await movieApiCaller.movieApiCaller();
-    //movieApiCaller.movieBoxOfficeCaller();
+    await movieApiCaller.movieBoxOfficeCaller();
   }
   async selectReviews(movie_id){
     const result = await this.client.query('SELECT review_id, id, rating, review FROM movieReview WHERE movie_id = $1',[movie_id]);
@@ -89,8 +89,8 @@ class dbcon {
   }
 
   async selectMovieTitleAndProdYear(title, reprlsdate){
-    const searchTitle = ` ${title}`;
-    const result = await this.client.query('SELECT movie_id FROM movie WHERE title LIKE $1 AND repRlsDate = $2',[searchTitle, reprlsdate]);
+    const searchTitle = `${title}`;
+    const result = await this.client.query('SELECT movie_id FROM movie WHERE title = $1 AND repRlsDate = $2',[title, reprlsdate]);
     return result.rows[0];
   }
 
