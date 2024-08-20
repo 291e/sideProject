@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${inter.className}
-      max-w-screen-sm mx-auto`}
+       max-w-screen-md mx-auto `}
       >
         <QueryProvider>{children}</QueryProvider>
       </body>
