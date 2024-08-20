@@ -1,7 +1,9 @@
+import BoxOfficeMovies from "@/components/(movie)/boxOfficeMovies";
+
 export default function Movie() {
   return (
     <div>
-      <span>hi</span>
+      <BoxOfficeMovies />
     </div>
   );
 }
