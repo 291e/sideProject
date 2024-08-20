@@ -33,7 +33,15 @@ const PostsPage = () => {
                   <span>{post.createAt}</span>
                 </div>
               </div>
+<<<<<<< Updated upstream
             </Link>
+=======
+              <div className="flex justify-between text-xs">
+                <span>{post.name}</span>
+                <span>{post.post_date}</span>
+              </div>
+            </div>
+>>>>>>> Stashed changes
           </li>
         ))}
       </ul>

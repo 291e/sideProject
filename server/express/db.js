@@ -148,7 +148,7 @@ class dbcon {
 
   async selectPosts(limit){
     //const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC LIMIT $1 OFFSET $2',limit);
-    const result = await this.client.query('SELECT post_id, title, id FROM post ORDER BY post_id DESC');
+    const result = await this.client.query('SELECT post_id, title,content, id, name, post_date FROM post ORDER BY post_id DESC');
     return result.rows;
   }
   async selectPost(post_id){
@@ -158,7 +158,7 @@ class dbcon {
   async insertPost(post){
     try {
       await this.begin();
-      await this.client.query('INSERT INTO post (title, content, id) VALUES ($1, $2, $3)',post);
+      await this.client.query('INSERT INTO post (title, content, id, name) VALUES ($1, $2, $3, $4)',post);
       await this.commit();
     }
     catch{

@@ -190,8 +190,10 @@ router.get('/:post_id', passport.authenticate('jwt', { session: false }), async 
 router.post('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const { title = '', content = '' } = req.body;
     const id = req.user.id;
+    const name = req.user.name;
+    console.log(name);
     try{
-      await postService.postCreate([title, content, id]);
+      await postService.postCreate([title, content, id, name]);
       res.status(200).json({ message: 'Create Success' });
     }
     catch{

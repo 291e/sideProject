@@ -1,24 +1,29 @@
 \c member
-
+SET timezone = 'Asia/Seoul'; 
 CREATE TABLE IF NOT EXISTS member (
     member_id SERIAL, 
     name TEXT, 
     id TEXT PRIMARY KEY, 
-    password TEXT
+    password TEXT,
+    signup_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS post (
     post_id SERIAL PRIMARY KEY, 
     title TEXT, 
     content TEXT, 
-    id TEXT REFERENCES member(id)
+    id TEXT REFERENCES member(id),
+    name TEXT,
+    post_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS comment (
     comment_id SERIAL PRIMARY KEY, 
     comment TEXT, 
     post_id INT REFERENCES post(post_id), 
-    id TEXT REFERENCES member(id)
+    id TEXT REFERENCES member(id),
+    name TEXT,
+    comment_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS likepoint (

@@ -10,6 +10,8 @@ const memberService = require('./service/memberService');
  *     description: Get Profile
  *     tags: 
  *      - profile
+ *     security:
+ *      - BearerAuth: [] 
  *     responses:
  *       200:
  *         description: A Profile object
