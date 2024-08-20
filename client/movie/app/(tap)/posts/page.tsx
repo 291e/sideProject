@@ -21,17 +21,19 @@ const PostsPage = () => {
       <ul className="text-black grid grid-cols-3 gap-4">
         {data?.data?.posts.map((post: any) => (
           <li key={post.id} className="aspect-1 bg-neutral-100 rounded-xl p-4 ">
-            <div className="flex flex-col justify-between h-full">
-              <div className="flex flex-col gap-2">
-                <span className="font-semibold">{post.title}</span>
-                <div className="border-[1px] rounded-md" />
-                <span className="text-sm">{post.content}</span>
+            <Link href={`/posts/${post.id}`}>
+              <div className="flex flex-col justify-between h-full">
+                <div className="flex flex-col gap-2">
+                  <span className="font-semibold">{post.title}</span>
+                  <div className="border-[1px] rounded-md" />
+                  <span className="text-sm">{post.content}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>{post.id}</span>
+                  <span>{post.createAt}</span>
+                </div>
               </div>
-              <div className="flex justify-between text-xs">
-                <span>{post.owner}</span>
-                <span>{post.createAt}</span>
-              </div>
-            </div>
+            </Link>
           </li>
         ))}
       </ul>
