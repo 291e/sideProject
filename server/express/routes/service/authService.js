@@ -28,10 +28,11 @@ class authService {
             try{
                 const hash = await db.authMember(email);
                 const isMatch = await bcrypt.compare(password, hash.password);
+                const name = await db.selectMember(email);
             
                 if(isMatch){
                 //jwt token 발급
-                    const token = jwt.sign({ id: email }, process.env.JWT_SECRET, { algorithm: 'HS256', expiresIn: '20m' });
+                    const token = jwt.sign({ id: email, name: name.name }, process.env.JWT_SECRET, { algorithm: 'HS256', expiresIn: '20m' });
                     return [200, token];
                 }
                 else{
