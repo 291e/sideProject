@@ -5,7 +5,7 @@ Javascript, Node.js를 이용해 영화 커뮤니티를 구현합니다.
 
 # 계획
 
-주요기술: Javascript, Node.js, express
+주요기술: Javascript, Node.js, express  
 ![구조도](img/service.png)
 
 # 실행방법
