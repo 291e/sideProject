@@ -1,6 +1,4 @@
 # Movie Community Project
-
-# 계획
 Javascript, Node.js를 이용해 영화 커뮤니티를 구현합니다.
 
 # 계획
