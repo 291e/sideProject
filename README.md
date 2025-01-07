@@ -16,8 +16,3 @@ Javascript, Node.js를 이용해 영화 커뮤니티를 구현합니다.
    cd sideProject
    docker-compose up
 ```
-
-### 향후방향
-ArgoCD 설정 자동화, Jenkins 잡 등록 자동화, 쿠버네티스 설치, 설정 자동화  
-
-후보기술: Helm, Ansible
