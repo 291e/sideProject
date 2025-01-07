@@ -1,0 +1,10 @@
+DB_USER=postgres
+DB_HOST=postgres
+DB_DATABASE=member
+DB_PASSWORD=movie
+DB_PORT=5432
+
+#Your Keys
+JWT_SECRET=
+KMDB_API_KEY=
+KOBIS_API_KEY=

@@ -1,8 +1,23 @@
 # Movie Community Project
 
-## Using
-1. Run Docker-compose:
-   ```bash
+# 계획
+Javascript, Node.js를 이용해 영화 커뮤니티를 구현합니다.
+
+# 계획
+
+주요기술: Javascript, Node.js, express
+![구조도](img/service.png)
+
+# 실행방법
+.env 파일 설정이 필요합니다.
+
+```bash
+   git clone https://github.com/jth0809/sideProject.git
+   cd sideProject
    docker-compose up
-   ```
-done.
+```
+
+### 향후방향
+ArgoCD 설정 자동화, Jenkins 잡 등록 자동화, 쿠버네티스 설치, 설정 자동화  
+
+후보기술: Helm, Ansible
